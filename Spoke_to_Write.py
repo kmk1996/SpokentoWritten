@@ -1,0 +1,250 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[18]:
+
+
+def get_rules():
+    rules = {"Numbers":{
+                        "zero": 0,
+                        "one" : 1,
+                        "two": 2,
+                        "three": 3,
+                        "four": 4,
+                        "five": 5,
+                        "six": 6,
+                        "seven": 7,
+                        "eight": 8,
+                        "nine": 9,
+                        "ten": 10,
+                        "twenty": 20,
+                        "thirty": 30,
+                        "forty": 40,
+                        "fifty": 50,
+                        "sixty": 60,
+                        "seventy": 70,
+                        "eighty": 80,
+                        "ninety": 90,
+                        "hundred": 100
+                        },
+            "Tuples": {
+                         "single":1,
+                         "double":2,
+                         "triple":3,
+                         "quadruple":4,
+                         "quintuple":5,
+                         "sextuple":6,
+                         "septuple":7,
+                         "octuple":8,
+                         "nonuple":9,
+                         "decuple":10
+                      },
+            "General": {
+                          "C M": "CM",
+                          "P M": "PM",
+                          "D M": "DM",
+                          "A M": "AM"
+                       }
+            }
+    return rules
+
+#checking if word has comma at front or at last or at both  if true then return front,word and last 
+def check_front_last(word):
+    front=""
+    last=""
+    if(len(word)>1):
+        if word[-1]==',' or word[-1]=='.':
+            last=word[-1]
+            word=word[:-1]
+        if word[0]==',' or word[0]=='.':
+            front=word[0]
+            word=word[1:]
+    return front,word,last
+
+
+#class for conversion
+class SpokenToWritten:
+
+    def __init__(self):
+
+        self.rules=get_rules()
+        self.paragraph=""
+        self.ouptut_para=""
+
+    #getting user input
+    def get_user_input(self):
+
+        self.paragraph=input("\n[IN]:Enter Your paragraph of spoken english:\n\t")
+
+        if not self.paragraph:
+            raise ValueError("[Error]: You entered nothing.")
+
+    #getting  user output
+    def show_output(self):
+        print("\n[OUT]:The input Spoken English Paragraph: \n\n \" "+ self.paragraph+"\"")
+        print("\nConverted Written English Paragraph: \n\n \"" +self.ouptut_para+"\"")
+
+    
+    #main conversion function of spoken to written english 
+    def Convert(self):
+        #splitting paragraph into individual words
+        words_of_para=self.paragraph.split()
+        print(words_of_para[0])
+        #accessing defines rules
+        numbers=self.rules['Numbers']
+        tuples=self.rules['Tuples']
+        general=self.rules['General']
+        i=0
+        no_of_words=len(words_of_para)
+        
+        #loop will run for the number of words in paragraph 
+        while i<no_of_words: 
+            
+            front,word,last=check_front_last(words_of_para[i])
+            #Word of paragraph may of form ',dollars.' 
+            if i+1!= no_of_words:
+            #when word is of the form e.g.: two 
+                front_n,next_word,last_n=check_front_last(words_of_para[i+1])
+                if word.lower() in numbers.keys() and (next_word.lower()=='dollars' or next_word.lower()=='dollar'):
+                    self.ouptut_para=self.ouptut_para+" "+front+"$"+str(numbers[word.lower()])+last
+                    i=i+2
+
+                elif word.lower() in tuples.keys() and len(next_word)==1:
+                    #when word is of form Triple A
+                    self.ouptut_para=self.ouptut_para+" "+front_n+(next_word*tuples[word.lower()])+last_n
+                    i=i+2
+                elif (word+" "+next_word) in general.keys():
+                    #if word is of form P M or C M
+                    self.ouptut_para=self.ouptut_para+" "+front+word+next_word+last_n
+                    i=i+2
+                else:
+                    self.ouptut_para=self.ouptut_para+" "+words_of_para[i]
+                    i=i+1
+            else:
+                self.ouptut_para=self.ouptut_para+" "+words_of_para[i]
+                i=i+1
+
+
+#main function 
+def convert_sp_to_wr():
+    #creating class object
+    obj_spoken=SpokenToWritten()
+    obj_spoken.get_user_input()
+    obj_spoken.Convert()
+
+
+    obj_spoken.show_output()
+
+
+# In[19]:
+
+
+convert_sp_to_wr()
+
+
+# In[4]:
+
+
+convert_sp_to_wr()
+
+
+# In[5]:
+
+
+convert_sp_to_wr()
+
+
+# In[9]:
+
+
+convert_sp_to_wr()
+
+
+# In[7]:
+
+
+check_front_last(dollar)
+
+
+# In[15]:
+
+
+import re
+strr = "The rain in twenty four dollar ddd ghhhh triple A and jkjk double B"
+x = re.findall("twenty four", strr)
+
+def listToString(x):  
+    
+    # initialize an empty string 
+    str1 = " " 
+    
+    # return string   
+    return (str1.join(x)) 
+        
+        
+# Driver code    
+uu=listToString(x)
+
+def text2int(textnum, numwords={}):
+    if not numwords:
+      units = [
+        "zero", "one", "two", "three", "four", "five", "six", "seven", "eight",
+        "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen",
+        "sixteen", "seventeen", "eighteen", "nineteen",
+      ]
+
+      tens = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"]
+
+      scales = ["hundred", "thousand", "million", "billion", "trillion"]
+
+      numwords["seven billion one hundred million thirty one thousand three hundred thirty sevenand"] = (1, 0)
+      for idx, word in enumerate(units):    numwords[word] = (1, idx)
+      for idx, word in enumerate(tens):     numwords[word] = (1, idx * 10)
+      for idx, word in enumerate(scales):   numwords[word] = (10 ** (idx * 3 or 2), 0)
+
+    current = result = 0
+    for word in textnum.split():
+        if word not in numwords:
+          raise Exception("Illegal word: " + word)
+
+        scale, increment = numwords[word]
+        current = current * scale + increment
+        if scale > 100:
+            result += current
+            current = 0
+
+    return result + current
+zz =  text2int(uu)
+print(zz)
+index = strr.find('twenty four')
+output_line = strr[:index] + str(zz) + strr[index:]
+
+print(output_line)
+vv=output_line.replace("twenty four","")
+bb=vv.replace("dollar","$")
+print(bb)
+def move_word(bb, word, pos):
+   split = bb.split()
+   split.insert(pos, split.pop(split.index(word)))
+   return ' '.join(split)
+nn=move_word(bb, '$', 3)
+
+hu=re.sub(r'(?:(?<=\$) | (?=\/))','',nn)
+
+for idd, www in enumerate(hu.split()):
+    if www=="triple":
+        az=hu.split()[idd+1]*3
+        addd=listToString(az)
+        arr=hu.replace("triple A",az)
+        print(arr)
+    if www=="double":
+        ae=hu.split()[idd+1]*2
+        fhh=hu.replace("double B",ae)
+        print(fhh)
+
+
+# In[ ]:
+
+
+
+
